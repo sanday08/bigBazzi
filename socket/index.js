@@ -169,10 +169,19 @@ getResult = async (stopNum) => {
         break;
       }
     }
+  let x = Math.floor(Math.random() * 4) + 2;
+  if (games.adminBalance > games.position[result] * x) {
+    for (let transId in transactions[result]) {
+      transactions[result][transId] = transactions[result][transId] * x;
+    }
+  }
+  else
+    x = 1
 
   io.emit("res", {
     data: {
       data: parseInt(result),
+      x
     },
     en: "result",
     status: 1,
