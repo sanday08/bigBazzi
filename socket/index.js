@@ -123,7 +123,7 @@ io.on("connection", (socket) => {
 setInterval(async () => {
   // if (new Date().getHours() > 7 && new Date().getHours() < 22) {
 
-  if (new Date().getTime() / 1000 > games.startTime + 120) {
+  if (new Date().getTime() / 1000 > games.startTime + 90) {
     getResult(11);
   }
 
