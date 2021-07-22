@@ -27,6 +27,7 @@ let adminPer = 90;
 
 io.on("connection", (socket) => {
   //Join Event When Application is Start
+  console.log("Socket Connected", socket.id);
   socket.on("join", async ({ token }) => {
     let user = await getUserInfoBytoken(token);
     //Log Out other User
