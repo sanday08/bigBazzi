@@ -55,6 +55,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("joinAdmin", async ({ adminId }) => {
+    console.log("Vijay lodu joinj")
     let user = await getUserInfo(adminId);
     if (user.role == 'Admin') {
       socket.join('adminData');
