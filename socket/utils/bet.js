@@ -74,7 +74,7 @@ async function addGameResult(result, x) {
 async function getLastrecord(retailerId) {
   try {
     let result = await WinResult.find()
-      .select({ result: 1, _id: 0 })
+      .select({ result: 1, x: 1, _id: 0 })
       .sort("-createdAt")
       .limit(15);
     let data = [];
