@@ -41,7 +41,7 @@ io.on("connection", (socket) => {
     retailers[user._id] = socket.id;
     console.log("Join call Game  ");
 
-    let numbers = await getLastrecord(user._id);
+    let numbers = await getLastrecord();
     // let gameData = await getCurrentBetData( user._id)
     socket.emit("res", {
       data: {
@@ -57,7 +57,7 @@ io.on("connection", (socket) => {
 
   socket.on("joinAdmin", async ({ adminId }) => {
     console.log("Vijay lodu joinj");
-    let numbers = await getLastrecord(user._id);
+    let numbers = await getLastrecord();
     let user = await getUserInfo(adminId);
     if (user.role == "Admin") {
       socket.join("adminData");
@@ -199,7 +199,7 @@ getResult = async (stopNum) => {
   // Pay Out of the winners
 
   flushAll();
-  let numbers = await getLastrecord(user._id);
+  let numbers = await getLastrecord();
   socket.emit("resAdmin", { data: games.position, numbers: numbers.records.splice(0, 10) });
 };
 

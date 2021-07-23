@@ -71,7 +71,7 @@ async function addGameResult(result, x) {
 }
 
 //Add result of the Game
-async function getLastrecord(retailerId) {
+async function getLastrecord() {
   try {
     let result = await WinResult.find()
       .select({ result: 1, x: 1, _id: 0 })
