@@ -77,7 +77,7 @@ io.on("connection", (socket) => {
       playJeetoJoker(position, result);
 
       if (betPoint) games.adminBalance += (betPoint * adminPer) / 100;
-      socket.to("adminData").emit("resAdmin", { data: games.position, numbers: numbers.records.splice(0, 10) });
+      socket.to("adminData").emit("resAdminBetData", { data: games.position });
       console.log(
         "Viju vinod Chopda Admin balance is: ",
         games.adminBalance,
