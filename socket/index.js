@@ -48,6 +48,7 @@ io.on("connection", (socket) => {
         user,
         time: new Date().getTime() / 1000 - games.startTime,
         numbers: numbers.records,
+        x: numbers.x,
       },
       en: "join",
       status: 1,
@@ -55,16 +56,17 @@ io.on("connection", (socket) => {
   });
 
   socket.on("joinAdmin", async ({ adminId }) => {
-    console.log("Vijay lodu joinj")
+    console.log("Vijay lodu joinj");
     let user = await getUserInfo(adminId);
-    if (user.role == 'Admin') {
-      socket.join('adminData');
-      socket.emit("res", { data: transactions, en: 'betData' });
-    }
-    else
-      socket.emit("res", { data: "You are not authorised to access this information", en: 'error' });
-
-  })
+    if (user.role == "Admin") {
+      socket.join("adminData");
+      socket.emit("res", { data: transactions, en: "betData" });
+    } else
+      socket.emit("res", {
+        data: "You are not authorised to access this information",
+        en: "error",
+      });
+  });
 
   socket.on("placeBet", async ({ retailerId, position, betPoint }) => {
     let ticketId = nanoid();
@@ -74,7 +76,7 @@ io.on("connection", (socket) => {
       playJeetoJoker(position, result);
 
       if (betPoint) games.adminBalance += (betPoint * adminPer) / 100;
-      socket.to('adminData').emit("res", { data: transactions, en: 'betData' });
+      socket.to("adminData").emit("res", { data: transactions, en: "betData" });
       console.log(
         "Viju vinod Chopda Admin balance is: ",
         games.adminBalance,
@@ -176,14 +178,12 @@ getResult = async (stopNum) => {
     for (let transId in transactions[result]) {
       transactions[result][transId] = transactions[result][transId] * x;
     }
-  }
-  else
-    x = 1
+  } else x = 1;
 
   io.emit("res", {
     data: {
       data: parseInt(result),
-      x
+      x,
     },
     en: "result",
     status: 1,
@@ -191,7 +191,7 @@ getResult = async (stopNum) => {
 
   if (games.position[result]) games.adminBalance -= games.position[result];
 
-  await addGameResult(result);
+  await addGameResult(result, x);
 
   await payTransaction(result);
 

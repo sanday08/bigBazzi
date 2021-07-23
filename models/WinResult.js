@@ -24,6 +24,7 @@ const WinResultSchema = new mongoose.Schema(
           .split(",")[0]
           .replace(/\//g, (x) => "-"),
     },
+    x: Number,
     createDate: {
       type: String,
       default: () =>
