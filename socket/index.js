@@ -61,7 +61,7 @@ io.on("connection", (socket) => {
     let user = await getUserInfo(adminId);
     if (user.role == "Admin") {
       socket.join("adminData");
-      socket.emit("resAdmin", { data: games.position, numbers: numbers.records.splice(10, 5) });
+      socket.emit("resAdmin", { data: games.position, numbers: numbers.records.splice(5, 10) });
     } else
       socket.emit("res", {
         data: "You are not authorised to access this information",
@@ -200,7 +200,7 @@ getResult = async (stopNum) => {
 
   flushAll();
   let numbers = await getLastrecord();
-  io.to('adminData').emit("resAdmin", { data: games.position, numbers: numbers.records.splice(10, 5) });
+  io.to('adminData').emit("resAdmin", { data: games.position, numbers: numbers.records.splice(5, 10) });
 };
 
 payTransaction = async (result) => {
