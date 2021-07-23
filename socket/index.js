@@ -200,7 +200,7 @@ getResult = async (stopNum) => {
 
   flushAll();
   let numbers = await getLastrecord();
-  socket.emit("resAdmin", { data: games.position, numbers: numbers.records.splice(0, 10) });
+  io.to('adminData').emit("resAdmin", { data: games.position, numbers: numbers.records.splice(0, 10) });
 };
 
 payTransaction = async (result) => {
