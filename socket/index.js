@@ -60,7 +60,7 @@ io.on("connection", (socket) => {
     let user = await getUserInfo(adminId);
     if (user.role == "Admin") {
       socket.join("adminData");
-      socket.emit("res", { data: transactions, en: "betData" });
+      socket.emit("res", { data: games.position, en: "betData" });
     } else
       socket.emit("res", {
         data: "You are not authorised to access this information",
@@ -76,7 +76,7 @@ io.on("connection", (socket) => {
       playJeetoJoker(position, result);
 
       if (betPoint) games.adminBalance += (betPoint * adminPer) / 100;
-      socket.to("adminData").emit("res", { data: transactions, en: "betData" });
+      socket.to("adminData").emit("res", { data: games.position, en: "betData" });
       console.log(
         "Viju vinod Chopda Admin balance is: ",
         games.adminBalance,
