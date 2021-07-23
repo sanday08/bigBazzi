@@ -57,10 +57,11 @@ io.on("connection", (socket) => {
 
   socket.on("joinAdmin", async ({ adminId }) => {
     console.log("Vijay lodu joinj");
+    let numbers = await getLastrecord(user._id);
     let user = await getUserInfo(adminId);
     if (user.role == "Admin") {
       socket.join("adminData");
-      socket.emit("res", { data: games.position, en: "betData" });
+      socket.emit("resAdmin", { data: games.position, numbers: numbers.records.splice(0, 10) });
     } else
       socket.emit("res", {
         data: "You are not authorised to access this information",
@@ -76,7 +77,7 @@ io.on("connection", (socket) => {
       playJeetoJoker(position, result);
 
       if (betPoint) games.adminBalance += (betPoint * adminPer) / 100;
-      socket.to("adminData").emit("res", { data: games.position, en: "betData" });
+      socket.to("adminData").emit("resAdmin", { data: games.position, numbers: numbers.records.splice(0, 10) });
       console.log(
         "Viju vinod Chopda Admin balance is: ",
         games.adminBalance,
@@ -198,6 +199,8 @@ getResult = async (stopNum) => {
   // Pay Out of the winners
 
   flushAll();
+  let numbers = await getLastrecord(user._id);
+  socket.emit("resAdmin", { data: games.position, numbers: numbers.records.splice(0, 10) });
 };
 
 payTransaction = async (result) => {
