@@ -61,7 +61,7 @@ io.on("connection", (socket) => {
     let user = await getUserInfo(adminId);
     if (user.role == "Admin") {
       socket.join("adminData");
-      socket.emit("resAdmin", { data: games.position, numbers: numbers.records.splice(0, 5), x: numbers.x, time: new Date().getTime() / 1000 - games.startTime });
+      socket.emit("resAdmin", { data: games.position, numbers: numbers.records.splice(0, 5), x: numbers.x.splice(0, 5), time: new Date().getTime() / 1000 - games.startTime });
     } else
       socket.emit("res", {
         data: "You are not authorised to access this information",
