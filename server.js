@@ -58,8 +58,8 @@ app.use(xss());
 
 //Rate limiting
 const limiter = rateLimit({
-  windowMs: 10 * 60 * 1000, // 10 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+    windowMs: 10 * 60 * 1000, // 10 minutes
+    max: 100, // limit each IP to 100 requests per windowMs
 });
 app.use(limiter);
 
@@ -75,7 +75,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 //Dev logging middleware
 if (process.env.NODE_ENV === "development") {
-  app.use(morgan("dev"));
+    app.use(morgan("dev"));
 }
 
 //Mount routers
@@ -90,18 +90,18 @@ app.use(errorHandler);
 
 const Port = 7000;
 const serverException = server.listen(
-  Port,
-  console.log(
-    `Server running in ${process.env.NODE_ENV} mode on port  ${Port}`.yellow
-      .bold
-  )
+    Port,
+    console.log(
+        `Server running in ${process.env.NODE_ENV} mode on port  ${Port}`.yellow
+        .bold
+    )
 );
 
 //Handle unhandled promise rejection
 process.on("unhandledRejection", (err, promise) => {
-  console.log(`Error:${err.message}`.red);
-  //Close server and exit process
-  serverException.close(() => process.exit(1));
+    console.log(`Error:${err.message}`.red);
+    //Close server and exit process
+    serverException.close(() => process.exit(1));
 });
 
 module.exports = { io };
