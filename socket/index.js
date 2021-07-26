@@ -63,13 +63,13 @@ io.on("connection", (socket) => {
   });
 
   socket.on("joinAdmin", async ({ adminId }) => {
-    let data = await getAdminData();
-    console.log("Admin Data", data);
+    let dataAdmin = await getAdminData();
+
     let numbers = await getLastrecord();
     let user = await getUserInfo(adminId);
     if (user.role == "Admin") {
       socket.join("adminData");
-      socket.emit("resAdmin", { data: games.position, numbers: numbers.records.splice(0, 5), x: numbers.x.splice(0, 5), time: new Date().getTime() / 1000 - games.startTime });
+      socket.emit("resAdmin", { data: games.position, numbers: numbers.records.splice(0, 5), x: numbers.x.splice(0, 5), time: new Date().getTime() / 1000 - games.startTime, dataAdmin });
     } else
       socket.emit("res", {
         data: "You are not authorised to access this information",
@@ -94,7 +94,8 @@ io.on("connection", (socket) => {
       playJeetoJoker(position, result);
 
       if (betPoint) games.adminBalance += (betPoint * adminPer) / 100;
-      socket.to("adminData").emit("resAdminBetData", { data: games.position });
+      let dataAdmin = await getAdminData();
+      socket.to("adminData").emit("resAdminBetData", { data: games.position, dataAdmin });
       console.log(
         "Viju vinod Chopda Admin balance is: ",
         games.adminBalance,
@@ -220,7 +221,8 @@ getResult = async (stopNum) => {
 
   flushAll();
   let numbers = await getLastrecord();
-  io.to('adminData').emit("resAdmin", { data: games.position, numbers: numbers.records.splice(0, 5), x: numbers.x.splice(0, 5), time: new Date().getTime() / 1000 - games.startTime });
+  let dataAdmin = await getAdminData();
+  io.to('adminData').emit("resAdmin", { data: games.position, numbers: numbers.records.splice(0, 5), x: numbers.x.splice(0, 5), time: new Date().getTime() / 1000 - games.startTime, dataAdmin });
 };
 
 payTransaction = async (result) => {
