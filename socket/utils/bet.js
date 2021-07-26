@@ -34,7 +34,7 @@ async function placeBet(retailerId, position, betPoint, ticketId) {
   }
 }
 async function getAdminData() {
-  let data = Bet.aggregate([
+  let data = await Bet.aggregate([
     {
       $match: {
         DrDate: () =>

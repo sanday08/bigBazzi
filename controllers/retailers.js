@@ -165,11 +165,30 @@ exports.claimeTicket = asyncHandler(async (req, res, next) => {
 
 //@desc      Post all Bet History
 //@routes    Post /api/retailers/complaint
-//Access     Private/Admin
+//Access     Private/retailer
 exports.addComplaint = asyncHandler(async (req, res, next) => {
   const bets = await Complaint.create({
     title: req.body.title,
     content: req.body.content,
   });
   res.status(200).json({ success: true, count: bets.length, data: bets });
+});
+
+//@desc      Get all Commision Result History
+//@routes    GET /api/retailers/commission/
+//Access     Private/retailer
+exports.getCommissionByDate = asyncHandler(async (req, res, next) => {
+  console.log(req.query.date, req.body.date, req.params.date);
+  const data = await Bet.aggregate([
+    {
+      $match: {
+        retailerId: req.user.id
+      }
+    },
+    { $group: { _id: "$DrDate", totalCollection: { $sum: "$bet" }, totalPayment: { $sum: "$won" }, totalCommission: { $sum: "$retailerCommission" } } },
+    { $sort: { createdAt: -1 } }
+  ]);
+  res
+    .status(200)
+    .json({ success: true, data });
 });

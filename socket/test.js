@@ -53,9 +53,4 @@ getResultRouletteRoyal = async (position) => {
   if (position[result])
     games[gameName].adminBalance -= position[result];
 
-
-
-
-
-
 }
