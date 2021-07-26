@@ -33,7 +33,25 @@ async function placeBet(retailerId, position, betPoint, ticketId) {
     return;
   }
 }
+async function getAdminData() {
+  let data = Bet.aggregate([
+    {
+      $match: {
+        DrDate: () =>
+          new Date()
+            .toLocaleString("en-US", {
+              timeZone: "Asia/Calcutta",
+            })
+            .toString()
+            .split(",")[0]
+            .replace(/\//g, (x) => "-"),
+      }
+    },
+    { $group: { totalCollection: { $sum: "$bet" }, totalPayment: { $sum: "$won" } } },
 
+  ]);
+  return data;
+}
 async function winGamePay(price, betId, winPosition) {
   try {
     console.log(
@@ -110,4 +128,5 @@ module.exports = {
   addGameResult,
   getLastrecord,
   getCurrentBetData,
+  getAdminData
 };

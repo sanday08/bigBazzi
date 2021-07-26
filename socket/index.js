@@ -6,6 +6,7 @@ const {
   getAdminPer,
   addGameResult,
   getLastrecord,
+  getAdminData
 } = require("./utils/bet");
 
 const immutable = require("object-path-immutable");
@@ -62,7 +63,8 @@ io.on("connection", (socket) => {
   });
 
   socket.on("joinAdmin", async ({ adminId }) => {
-    console.log("Vijay lodu joinj");
+    let data = await getAdminData();
+    console.log("Admin Data", data);
     let numbers = await getLastrecord();
     let user = await getUserInfo(adminId);
     if (user.role == "Admin") {
