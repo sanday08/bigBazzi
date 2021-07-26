@@ -47,7 +47,7 @@ async function getAdminData() {
             .replace(/\//g, (x) => "-"),
       }
     },
-    { $group: { totalCollection: { $sum: "$bet" }, totalPayment: { $sum: "$won" } } },
+    { $group: { _id: "$DrDate", totalCollection: { $sum: "$bet" }, totalPayment: { $sum: "$won" } } },
 
   ]);
   return data;
