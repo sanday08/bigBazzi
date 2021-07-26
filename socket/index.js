@@ -190,7 +190,7 @@ getResult = async (stopNum) => {
     status: 1,
   });
 
-  if (games.position[result]) games.adminBalance -= games.position[result];
+  if (games.position[result]) games.adminBalance -= games.position[result] * x;
 
   await addGameResult(result, x);
 
