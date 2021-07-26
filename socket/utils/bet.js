@@ -6,7 +6,7 @@ async function placeBet(retailerId, position, betPoint, ticketId) {
   //Verify Token
   try {
     let user = await User.findById(retailerId);
-
+    let retailerCommission = user.commissionPercentage * betPoint / 100;
     if (user.creditPoint >= betPoint) {
       bet = await Bet.create({
         retailerId,
@@ -17,9 +17,10 @@ async function placeBet(retailerId, position, betPoint, ticketId) {
         name: user.name,
         ticketId,
         endPoint: user.creditPoint,
+        retailerCommission,
       });
       await User.findByIdAndUpdate(retailerId, {
-        $inc: { creditPoint: -betPoint, playPoint: betPoint },
+        $inc: { creditPoint: -betPoint, playPoint: betPoint, commissionPoint: retailerCommission },
         lastBetAmount: betPoint,
         lastTicketId: ticketId,
       });

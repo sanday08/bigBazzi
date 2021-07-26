@@ -35,6 +35,10 @@ const BetSchema = new mongoose.Schema(
       type: Object,
       required: true,
     },
+    retailerCommission: {
+      type: Number,
+      default: 0
+    },
     endPoint: {
       type: Number,
     },
@@ -46,6 +50,7 @@ const BetSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+
     x: Number,
     DrTime: {
       type: String,

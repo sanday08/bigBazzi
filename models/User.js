@@ -44,6 +44,15 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  commissionPoint: {
+    type: Number,
+    default: 0
+  },
+  commissionPercentage: {
+    type: Number,
+    default: 0,
+    maxlength: 2
+  },
   creditPoint: {
     type: Number,
     default: 0
@@ -78,7 +87,7 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  
+
   playPoint: {
     type: Number,
     default: 0

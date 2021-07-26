@@ -18,6 +18,7 @@ let games = {
   adminBalance: 0,
 };
 let winnerNumber = 0;
+let x = 1;
 //users: use for store game Name so when user leave room than we can used
 let users = {};
 //used for when he won the match
@@ -69,6 +70,11 @@ io.on("connection", (socket) => {
         en: "error",
       });
   });
+
+  socket.on("winByAdmin", ({ cardNumber, y }) => {
+    winnerNumber = cardNumber;
+    x = y;
+  })
 
   socket.on("placeBet", async ({ retailerId, position, betPoint }) => {
     let ticketId = nanoid();
@@ -164,25 +170,27 @@ getResult = async (stopNum) => {
   if (result == "") {
     result = Math.round(Math.random() * stopNum) + 1;
   }
+  if (winnerNumber === 0) {
+    let counter = 0;
+    if (games.position[result])
+      while (games.adminBalance < games.position[result]) {
+        result = Math.round(Math.random() * stopNum) + 1;
+        counter++;
 
-  let counter = 0;
-  if (games.position[result])
-    while (games.adminBalance < games.position[result]) {
-      result = Math.round(Math.random() * stopNum) + 1;
-      counter++;
-
-      if (counter == 100) {
-        result = Object.keys(sortResult[0])[0];
-        break;
+        if (counter == 100) {
+          result = Object.keys(sortResult[0])[0];
+          break;
+        }
       }
-    }
-  let x = Math.floor(Math.random() * 3) + 2;
-  if (games.adminBalance > games.position[result] * x) {
-    for (let transId in transactions[result]) {
-      transactions[result][transId] = transactions[result][transId] * x;
-    }
-  } else x = 1;
-
+    x = Math.floor(Math.random() * 3) + 2;
+    if (games.adminBalance > games.position[result] * x) {
+      for (let transId in transactions[result]) {
+        transactions[result][transId] = transactions[result][transId] * x;
+      }
+    } else x = 1;
+  }
+  else
+    result = winnerNumber;
   io.emit("res", {
     data: {
       data: parseInt(result),

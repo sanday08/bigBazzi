@@ -3,6 +3,10 @@ const mongoose = require("mongoose");
 const WinResultSchema = new mongoose.Schema(
   {
     result: String,
+    isWinByAdmin: {
+      type: Boolean,
+      default: false
+    },
     DrTime: {
       type: String,
       default: () =>
