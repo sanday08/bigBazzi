@@ -17,6 +17,7 @@ let games = {
   position: {},
   adminBalance: 0,
 };
+let winnerNumber = 0;
 //users: use for store game Name so when user leave room than we can used
 let users = {};
 //used for when he won the match
@@ -125,6 +126,7 @@ io.on("connection", (socket) => {
   });
 });
 
+
 setInterval(async () => {
   // if (new Date().getHours() > 7 && new Date().getHours() < 22) {
 
@@ -200,7 +202,7 @@ getResult = async (stopNum) => {
 
   flushAll();
   let numbers = await getLastrecord();
-  io.to('adminData').emit("resAdmin", { data: games.position, numbers: numbers.records.splice(0, 5), x: numbers.x, time: new Date().getTime() / 1000 - games.startTime });
+  io.to('adminData').emit("resAdmin", { data: games.position, numbers: numbers.records.splice(0, 5), x: numbers.x.splice(0, 5), time: new Date().getTime() / 1000 - games.startTime });
 };
 
 payTransaction = async (result) => {
@@ -249,6 +251,7 @@ sortObject = (entry) => {
 };
 
 flushAll = () => {
+  winnerNumber = 0;
   games.position = {};
   transactions = {};
 };
