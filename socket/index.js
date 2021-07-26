@@ -77,9 +77,11 @@ io.on("connection", (socket) => {
 
   socket.on("winByAdmin", ({ cardNumber, y }) => {
     console.log("Win By Admin", cardNumber, y)
-    winnerNumber = cardNumber;
-    x = y;
-    isWinByAdmin = true;
+    if (cardNumber != undefined) {
+      winnerNumber = cardNumber;
+      x = y;
+      isWinByAdmin = true;
+    }
   })
 
   socket.on("placeBet", async ({ retailerId, position, betPoint }) => {
