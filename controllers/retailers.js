@@ -182,7 +182,7 @@ exports.getCommissionByDate = asyncHandler(async (req, res, next) => {
   const data = await Bet.aggregate([
     {
       $match: {
-        retailerId: req.user.id
+        retailerId: mongoose.Types.ObjectId(req.user.id)
       }
     },
     { $group: { _id: "$DrDate", totalCollection: { $sum: "$bet" }, totalPayment: { $sum: "$won" }, totalCommission: { $sum: "$retailerCommission" } } },
