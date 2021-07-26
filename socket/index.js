@@ -7,6 +7,7 @@ const {
   addGameResult,
   getLastrecord,
 } = require("./utils/bet");
+
 const immutable = require("object-path-immutable");
 var _ = require("lodash");
 const { customAlphabet } = require("nanoid");
@@ -18,7 +19,10 @@ let games = {
   adminBalance: 0,
 };
 let winnerNumber = 0;
+
 let x = 1;
+
+let isWinByAdmin = false;
 //users: use for store game Name so when user leave room than we can used
 let users = {};
 //used for when he won the match
@@ -74,6 +78,7 @@ io.on("connection", (socket) => {
   socket.on("winByAdmin", ({ cardNumber, y }) => {
     winnerNumber = cardNumber;
     x = y;
+    isWinByAdmin = true;
   })
 
   socket.on("placeBet", async ({ retailerId, position, betPoint }) => {
@@ -202,7 +207,7 @@ getResult = async (stopNum) => {
 
   if (games.position[result]) games.adminBalance -= (games.position[result] * x);
 
-  await addGameResult(result, x);
+  await addGameResult(result, x, isWinByAdmin);
 
   await payTransaction(result);
 
@@ -262,6 +267,7 @@ flushAll = () => {
   winnerNumber = 0;
   games.position = {};
   transactions = {};
+  isWinByAdmin = false;
 };
 
 playJeetoJoker = (position, result) => {

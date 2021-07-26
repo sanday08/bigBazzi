@@ -61,9 +61,9 @@ async function winGamePay(price, betId, winPosition) {
 }
 
 //Add result of the Game
-async function addGameResult(result, x) {
+async function addGameResult(result, x, isWinByAdmin) {
   try {
-    await WinResult.create({ result, x });
+    await WinResult.create({ result, x, isWinByAdmin });
     await Bet.updateMany({ winPosition: "" }, { winPosition: result, x: x });
   } catch (err) {
     console.log("Error on addGameResult", err.message);
