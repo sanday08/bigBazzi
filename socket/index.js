@@ -76,6 +76,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("winByAdmin", ({ cardNumber, y }) => {
+    console.log("Win By Admin", cardNumber, y)
     winnerNumber = cardNumber;
     x = y;
     isWinByAdmin = true;
