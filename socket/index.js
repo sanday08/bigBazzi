@@ -6,7 +6,7 @@ const {
   getAdminPer,
   addGameResult,
   getLastrecord,
-  getAdminData
+  getAdminData,
 } = require("./utils/bet");
 
 const immutable = require("object-path-immutable");
@@ -69,7 +69,13 @@ io.on("connection", (socket) => {
     let user = await getUserInfo(adminId);
     if (user.role == "Admin") {
       socket.join("adminData");
-      socket.emit("resAdmin", { data: games.position, numbers: numbers.records.splice(0, 5), x: numbers.x.splice(0, 5), time: new Date().getTime() / 1000 - games.startTime, dataAdmin });
+      socket.emit("resAdmin", {
+        data: games.position,
+        numbers: numbers.records.splice(0, 5),
+        x: numbers.x.splice(0, 5),
+        time: new Date().getTime() / 1000 - games.startTime,
+        dataAdmin,
+      });
     } else
       socket.emit("res", {
         data: "You are not authorised to access this information",
@@ -78,13 +84,13 @@ io.on("connection", (socket) => {
   });
 
   socket.on("winByAdmin", ({ cardNumber, y }) => {
-    console.log("Win By Admin", cardNumber, y)
+    console.log("Win By Admin", cardNumber, y);
     if (cardNumber != undefined) {
       winnerNumber = cardNumber;
       x = y;
       isWinByAdmin = true;
     }
-  })
+  });
 
   socket.on("placeBet", async ({ retailerId, position, betPoint }) => {
     let ticketId = nanoid();
@@ -95,7 +101,9 @@ io.on("connection", (socket) => {
 
       if (betPoint) games.adminBalance += (betPoint * adminPer) / 100;
       let dataAdmin = await getAdminData();
-      socket.to("adminData").emit("resAdminBetData", { data: games.position, dataAdmin });
+      socket
+        .to("adminData")
+        .emit("resAdminBetData", { data: games.position, dataAdmin });
       console.log(
         "Viju vinod Chopda Admin balance is: ",
         games.adminBalance,
@@ -143,11 +151,10 @@ io.on("connection", (socket) => {
   });
 });
 
-
 setInterval(async () => {
   // if (new Date().getHours() > 7 && new Date().getHours() < 22) {
 
-  if (new Date().getTime() / 1000 > games.startTime + 90) {
+  if (new Date().getTime() / 1000 > games.startTime + 95) {
     getResult(11);
   }
 
@@ -199,9 +206,7 @@ getResult = async (stopNum) => {
         transactions[result][transId] = transactions[result][transId] * x;
       }
     } else x = 1;
-  }
-  else
-    result = winnerNumber;
+  } else result = winnerNumber;
   io.emit("res", {
     data: {
       data: parseInt(result),
@@ -211,7 +216,7 @@ getResult = async (stopNum) => {
     status: 1,
   });
 
-  if (games.position[result]) games.adminBalance -= (games.position[result] * x);
+  if (games.position[result]) games.adminBalance -= games.position[result] * x;
 
   await addGameResult(result, x, isWinByAdmin);
 
@@ -222,7 +227,13 @@ getResult = async (stopNum) => {
   flushAll();
   let numbers = await getLastrecord();
   let dataAdmin = await getAdminData();
-  io.to('adminData').emit("resAdmin", { data: games.position, numbers: numbers.records.splice(0, 5), x: numbers.x.splice(0, 5), time: new Date().getTime() / 1000 - games.startTime, dataAdmin });
+  io.to("adminData").emit("resAdmin", {
+    data: games.position,
+    numbers: numbers.records.splice(0, 5),
+    x: numbers.x.splice(0, 5),
+    time: new Date().getTime() / 1000 - games.startTime,
+    dataAdmin,
+  });
 };
 
 payTransaction = async (result) => {
