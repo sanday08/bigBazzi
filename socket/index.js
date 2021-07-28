@@ -12,7 +12,6 @@ const {
 const immutable = require("object-path-immutable");
 var _ = require("lodash");
 const { customAlphabet } = require("nanoid");
-const User = require("../models/User");
 const nanoid = customAlphabet("1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ", 10);
 let games = {
   startTime: new Date().getTime() / 1000,
@@ -93,36 +92,38 @@ io.on("connection", (socket) => {
   });
 
   socket.on("placeBet", async ({ retailerId, position, betPoint }) => {
-    let ticketId = nanoid();
-    const result = await placeBet(retailerId, position, betPoint, ticketId);
+    if (betPoint > 0) {
+      let ticketId = nanoid();
+      const result = await placeBet(retailerId, position, betPoint, ticketId);
 
-    if (result != 0) {
-      playJeetoJoker(position, result);
+      if (result != 0) {
+        playJeetoJoker(position, result);
 
-      if (betPoint) games.adminBalance += (betPoint * adminPer) / 100;
-      let dataAdmin = await getAdminData();
-      socket
-        .to("adminData")
-        .emit("resAdminBetData", { data: games.position, dataAdmin });
-      console.log(
-        "Viju vinod Chopda Admin balance is: ",
-        games.adminBalance,
-        "     Admin Per:",
-        adminPer
-      );
+        if (betPoint) games.adminBalance += (betPoint * adminPer) / 100;
+        let dataAdmin = await getAdminData();
+        socket
+          .to("adminData")
+          .emit("resAdminBetData", { data: games.position, dataAdmin });
+        console.log(
+          "Viju vinod Chopda Admin balance is: ",
+          games.adminBalance,
+          "     Admin Per:",
+          adminPer
+        );
+      }
+
+      socket.emit("res", {
+        data: {
+          ticketId,
+          result:
+            result == 0
+              ? "You don't have sufficient Balance or Error on Place bet"
+              : "Place Bet Success",
+        },
+        en: "placeBet",
+        status: 1,
+      });
     }
-
-    socket.emit("res", {
-      data: {
-        ticketId,
-        result:
-          result == 0
-            ? "You don't have sufficient Balance or Error on Place bet"
-            : "Place Bet Success",
-      },
-      en: "placeBet",
-      status: 1,
-    });
   });
 
   socket.on("leaveRoom", ({ userId }) => {
@@ -163,6 +164,13 @@ setInterval(async () => {
     let p = await getAdminPer();
     adminPer = parseInt(p.percent);
     console.log("Now Admin Perchanted is", adminPer);
+  }
+  if (
+    new Date().getHours() == 0 &&
+    new Date().getSeconds() < 2 &&
+    new Date().getMinutes() == 0
+  ) {
+    games.adminBalance = 0;
   }
 
   //}
