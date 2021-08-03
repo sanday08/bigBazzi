@@ -2,26 +2,25 @@ const User = require("../../models/User");
 const Bet = require("../../models/Bet");
 const WinResult = require("../../models/WinResult");
 const Winning = require("../../models/Winning");
-async function placeBet(retailerId, position, betPoint, ticketId) {
+async function placeBet(retailerId, position, betAmount, ticketId, commission) {
   //Verify Token
   try {
     let user = await User.findById(retailerId);
-    let retailerCommission = user.commissionPercentage * betPoint / 100;
-    if (user.creditPoint >= betPoint) {
+
+    if (user.creditPoint >= betAmount) {
       bet = await Bet.create({
         retailerId,
-        bet: betPoint,
-        startPoint: user.creditPoint,
-        userName: user.userName,
+        bet: betAmount,
+        startPoint: user.amount,
         position,
-        name: user.name,
+        email: user.email,
         ticketId,
-        endPoint: user.creditPoint,
-        retailerCommission,
+        endPoint: user.amount - betAmount,
+        commission,
       });
       await User.findByIdAndUpdate(retailerId, {
-        $inc: { creditPoint: -betPoint, playPoint: betPoint, commissionPoint: retailerCommission },
-        lastBetAmount: betPoint,
+        $inc: { amount: -betAmount, playAmount: betAmount },
+        lastBetAmount: betAmount,
         lastTicketId: ticketId,
       });
 
@@ -68,7 +67,7 @@ async function winGamePay(price, betId, winPosition) {
     });
     let user = "";
     user = await User.findByIdAndUpdate(betData.retailerId, {
-      $inc: { creditPoint: price, wonPoint: price },
+      $inc: { creditPoint: price, wonAmount: price },
     });
 
     return betData.retailerId;
@@ -79,10 +78,10 @@ async function winGamePay(price, betId, winPosition) {
 }
 
 //Add result of the Game
-async function addGameResult(result, x, isWinByAdmin) {
+async function addGameResult(result, isWinByAdmin) {
   try {
-    await WinResult.create({ result, x, isWinByAdmin });
-    await Bet.updateMany({ winPosition: "" }, { winPosition: result, x: x });
+    await WinResult.create({ result, isWinByAdmin });
+    await Bet.updateMany({ winPosition: "" }, { winPosition: result });
   } catch (err) {
     console.log("Error on addGameResult", err.message);
     return err.message;
@@ -93,15 +92,14 @@ async function addGameResult(result, x, isWinByAdmin) {
 async function getLastrecord() {
   try {
     let result = await WinResult.find()
-      .select({ result: 1, x: 1, _id: 0 })
+      .select({ result: 1, _id: 0 })
       .sort("-createdAt")
       .limit(15);
     let data = [];
-    let x = [];
+
 
     for (res of result) {
       data.push(res.result);
-      x.push(res.x);
     }
 
     return { records: data, x };

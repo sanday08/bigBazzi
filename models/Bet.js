@@ -14,7 +14,7 @@ var istdate = new Date(utcdate.getTime() + offsetIST);
 
 const BetSchema = new mongoose.Schema(
   {
-    retailerId: {
+    userId: {
       type: mongoose.Schema.ObjectId,
       ref: "User",
       required: true,
@@ -29,13 +29,12 @@ const BetSchema = new mongoose.Schema(
       default: "",
     },
     startPoint: Number,
-    userName: String,
-    name: String,
+    email: String,
     position: {
       type: Object,
       required: true,
     },
-    retailerCommission: {
+    commission: {
       type: Number,
       default: 0
     },
@@ -51,7 +50,6 @@ const BetSchema = new mongoose.Schema(
       default: false,
     },
 
-    x: Number,
     DrTime: {
       type: String,
       default: () =>

@@ -8,9 +8,9 @@ const sendEmail = require("../utils/sendEmail");
 //@route   Post /api/auth
 //@access  Private
 exports.register = asyncHandler(async (req, res, next) => {
-  const { name, email, referralId, mobile, role, userName, password, transactionPin, address, pinCode, creditPoint } = req.body;
+  const { name, email, referralId, mobile, password, } = req.body;
   //Create User
-  const user = await User.create({ name, email, referralId, mobile, role, userName, password, transactionPin, address, pinCode, creditPoint, });
+  const user = await User.create({ name, email, referralId, mobile, password });
   //Create Token
   //   const token = user.getSignedJwtToken();
   //   res.status(200).json({ success: true, token });

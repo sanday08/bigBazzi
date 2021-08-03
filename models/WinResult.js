@@ -38,6 +38,7 @@ const WinResultSchema = new mongoose.Schema(
           })
           .toString(),
     },
+    gameName: String
   },
   { timestamps: true }
 );

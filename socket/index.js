@@ -34,7 +34,7 @@ let adminPer = 90;
 io.on("connection", (socket) => {
   //Join Event When Application is Start
   console.log("Socket Connected", socket.id);
-  socket.on("join", async ({ token }) => {
+  socket.on("join", async ({ token, gameName }) => {
     let user = await getUserInfoBytoken(token);
     //Log Out other User
     if (retailers[user._id] != socket.id) {
